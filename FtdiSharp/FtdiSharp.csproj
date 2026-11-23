@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageDescription>A cross-platform managed API for FTDI D2XX devices.</PackageDescription>
+    <PackageTags>FTDI;D2XX;USB;serial</PackageTags>
+  </PropertyGroup>
+
+</Project>
