@@ -12,11 +12,17 @@
 
         public FtdiSettings Settings { get; set; }
 
+        /// <summary>
+        /// Initializes a device descriptor with the specified channel settings.
+        /// </summary>
         public FtdiDevice(FtdiSettings settings)
         {
             Settings = settings;
         }
 
+        /// <summary>
+        /// Opens the device by its serial number and returns a configured channel.
+        /// </summary>
         public virtual FtdiChannel OpenBySerial()
         {
             FtdiNative.OpenEx(Serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
@@ -24,6 +30,9 @@
             return new FtdiChannel(Settings, handle);
         }
 
+        /// <summary>
+        /// Opens the device by its description and returns a configured channel.
+        /// </summary>
         public virtual FtdiChannel OpenByDescription()
         {
             FtdiNative.OpenEx(Description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
@@ -31,6 +40,9 @@
             return new FtdiChannel(Settings, handle);
         }
 
+        /// <summary>
+        /// Opens the device by its location and returns a configured channel.
+        /// </summary>
         public virtual FtdiChannel OpenByLocation()
         {
             FtdiNative.OpenEx(Location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();

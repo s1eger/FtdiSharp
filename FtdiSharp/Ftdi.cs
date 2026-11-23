@@ -2,14 +2,13 @@
 
 namespace FtdiSharp
 {
-    // TODO:
-    // 1. Сделать класс настроек и хранить здесь
-    // 2. Сделать получение списка устройств
-    // 3. Для списка устройств сделать устройство
     public class Ftdi
     {
         public FtdiSettings Settings { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance with the specified device settings.
+        /// </summary>
         public Ftdi(FtdiSettings settings)
         {
             Settings = settings;
@@ -17,6 +16,9 @@ namespace FtdiSharp
 
         public uint DeviceCount => GetDeviceCount();
 
+        /// <summary>
+        /// Gets the number of connected FTDI devices.
+        /// </summary>
         public uint GetDeviceCount()
         {
             FtdiNative.CreateDeviceInfoList(out uint count).ThrowIfNotOk();
@@ -24,6 +26,9 @@ namespace FtdiSharp
             return count;
         }
 
+        /// <summary>
+        /// Gets the version of the FTDI D2XX library.
+        /// </summary>
         public uint GetLibraryVersion()
         {
             FtdiNative.GetLibraryVersion(out uint version).ThrowIfNotOk();
@@ -31,6 +36,9 @@ namespace FtdiSharp
             return version;
         }
 
+        /// <summary>
+        /// Gets information about all connected FTDI devices.
+        /// </summary>
         public IReadOnlyList<FtdiDevice> GetDevices()
         {
             var count = DeviceCount;
@@ -47,6 +55,9 @@ namespace FtdiSharp
             return devices.AsReadOnly();
         }
 
+        /// <summary>
+        /// Gets detailed information about the device at the specified index.
+        /// </summary>
         public FtdiDevice GetDeviceInfoDetail(uint index)
         {
             byte[] serial = new byte[16];
@@ -75,6 +86,9 @@ namespace FtdiSharp
             };
         }
 
+        /// <summary>
+        /// Opens the device at the specified index and returns a configured channel.
+        /// </summary>
         public FtdiChannel OpenByIndex(uint index)
         {
             FtdiNative.Open(index, out FtdiSafeHandle handle).ThrowIfNotOk();
@@ -82,7 +96,14 @@ namespace FtdiSharp
             return new FtdiChannel(Settings, handle);
         }
 
+        /// <summary>
+        /// Rescans the system for connected FTDI devices.
+        /// </summary>
         public void Rescan() => FtdiNative.Rescan().ThrowIfNotOk(); 
+
+        /// <summary>
+        /// Reloads the driver for the device with the specified vendor and product IDs.
+        /// </summary>
         public void Reload(ushort vendorId, ushort productId) => FtdiNative.Reload(vendorId, productId).ThrowIfNotOk();
     }
 }
