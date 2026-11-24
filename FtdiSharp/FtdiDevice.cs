@@ -1,6 +1,6 @@
-﻿namespace FtdiSharp
+namespace FtdiSharp
 {
-    public class FtdiDevice
+    public class FtdiDevice : IFtdiDevice
     {
         public FtdiDeviceFlags Flags { get; init; }
         public FtdiDeviceType Type { get; init; }
@@ -8,46 +8,30 @@
         public uint Location { get; init; }
         public string Serial { get; init; } = string.Empty;
         public string Description { get; init; } = string.Empty;
-        public IntPtr Handle { get; set; }
 
-        public FtdiSettings Settings { get; set; }
+        private readonly Ftdi _ftdi;
 
         /// <summary>
-        /// Initializes a device descriptor with the specified channel settings.
+        /// Initializes a device descriptor that uses the specified FTDI instance to open channels.
         /// </summary>
-        public FtdiDevice(FtdiSettings settings)
+        public FtdiDevice(Ftdi ftdi)
         {
-            Settings = settings;
+            _ftdi = ftdi;
         }
 
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenBySerial()
-        {
-            FtdiNative.OpenEx(Serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public virtual FtdiChannel OpenBySerial() => _ftdi.OpenBySerial(this);
 
         /// <summary>
         /// Opens the device by its description and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByDescription()
-        {
-            FtdiNative.OpenEx(Description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public virtual FtdiChannel OpenByDescription() => _ftdi.OpenByDescription(this);
 
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByLocation()
-        {
-            FtdiNative.OpenEx(Location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public virtual FtdiChannel OpenByLocation() => _ftdi.OpenByLocation(this);
     }
 }
