@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 
 namespace FtdiSharp
 {
@@ -39,18 +39,21 @@ namespace FtdiSharp
         /// <summary>
         /// Gets information about all connected FTDI devices.
         /// </summary>
-        public IReadOnlyList<FtdiDevice> GetDevices()
+        public IReadOnlyList<FtdiDevice> GetDevices() => GetDevices(new DefaultFtdiFactory(this));
+
+        /// <summary>
+        /// Gets information about all connected FTDI devices using the specified factory.
+        /// </summary>
+        public IReadOnlyList<T> GetDevices<T>(IFtdiDeviceFactory<T> factory) where T: IFtdiDevice
         {
             var count = DeviceCount;
 
             if (count == 0)
                 return [];
 
-            var devices = new List<FtdiDevice>();
+            var devices = new List<T>();
             for (uint i = 0; i < count; i++)
-            {
-                devices.Add(GetDeviceInfoDetail(i));
-            }
+                devices.Add(GetDeviceInfoDetail(i, factory));
 
             return devices.AsReadOnly();
         }
@@ -58,32 +61,34 @@ namespace FtdiSharp
         /// <summary>
         /// Gets detailed information about the device at the specified index.
         /// </summary>
-        public FtdiDevice GetDeviceInfoDetail(uint index)
+        public FtdiDevice GetDeviceInfoDetail(uint index) => GetDeviceInfoDetail(index, new DefaultFtdiFactory(this));
+
+        /// <summary>
+        /// Gets detailed information about the device at the specified index using the specified factory.
+        /// </summary>
+        public T GetDeviceInfoDetail<T>(uint index, IFtdiDeviceFactory<T> factory) where T: IFtdiDevice
         {
             byte[] serial = new byte[16];
             byte[] description = new byte[64];
 
             FtdiNative.GetDeviceInfoDetail(
-                index, 
-                out var flags, 
-                out var type, 
-                out var id, 
-                out var location, 
-                serial, 
-                description, 
+                index,
+                out var flags,
+                out var type,
+                out var id,
+                out var location,
+                serial,
+                description,
                 out IntPtr handle
                 ).ThrowIfNotOk();
 
-            return new FtdiDevice(Settings)
-            {
-                Flags = flags,
-                Type = type,
-                Id = id,
-                Location = location,
-                Serial = Encoding.ASCII.GetString(serial).Cut('\0'),
-                Description = Encoding.ASCII.GetString(description).Cut('\0'),
-                Handle = handle
-            };
+            return factory.Create(
+                flags: flags, 
+                type: type, 
+                id: id, 
+                location: location, 
+                serial: Encoding.ASCII.GetString(serial).Cut('\0'), 
+                description: Encoding.ASCII.GetString(description).Cut('\0'));
         }
 
         /// <summary>
@@ -92,6 +97,66 @@ namespace FtdiSharp
         public FtdiChannel OpenByIndex(uint index)
         {
             FtdiNative.Open(index, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its serial number and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenBySerial(uint serial)
+        {
+            FtdiNative.OpenEx(serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its serial number and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenBySerial(IFtdiDevice device)
+        {
+            FtdiNative.OpenEx(device.Serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its description and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenByDescription(string description)
+        {
+            FtdiNative.OpenEx(description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its description and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenByDescription(IFtdiDevice device)
+        {
+            FtdiNative.OpenEx(device.Description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its location and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenByLocation(string location)
+        {
+            FtdiNative.OpenEx(location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();
+
+            return new FtdiChannel(Settings, handle);
+        }
+
+        /// <summary>
+        /// Opens the device by its location and returns a configured channel.
+        /// </summary>
+        public virtual FtdiChannel OpenByLocation(IFtdiDevice device)
+        {
+            FtdiNative.OpenEx(device.Location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();
 
             return new FtdiChannel(Settings, handle);
         }
