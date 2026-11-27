@@ -23,7 +23,7 @@
         T GetDeviceInfoDetail<T>(uint index, IFtdiDeviceFactory<T> factory) where T : IFtdiDevice;
 
         /// <summary>
-        /// Opens the device at the specified index and returns a configured channel.
+        /// Opens the device at the specified index from the list of devices and returns a configured channel.
         /// </summary>
         IFtdiChannel OpenByIndex(uint index);
 
