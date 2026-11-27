@@ -30,7 +30,7 @@
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
         /// </summary>
-        IFtdiChannel OpenBySerial(uint serial);
+        IFtdiChannel OpenBySerial(string serial);
 
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
@@ -50,7 +50,7 @@
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
         /// </summary>
-        IFtdiChannel OpenByLocation(string location);
+        IFtdiChannel OpenByLocation(uint location);
 
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
