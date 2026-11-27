@@ -1,3 +1,5 @@
+using FtdiSharp.Abstractions;
+
 namespace FtdiSharp
 {
     public class FtdiDevice : IFtdiDevice

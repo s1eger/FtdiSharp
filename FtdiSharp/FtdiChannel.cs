@@ -1,4 +1,6 @@
-﻿namespace FtdiSharp
+﻿using FtdiSharp.Native;
+
+namespace FtdiSharp
 {
     public class FtdiChannel : IDisposable
     {

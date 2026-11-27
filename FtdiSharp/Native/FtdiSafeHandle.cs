@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace FtdiSharp;
+namespace FtdiSharp.Native;
 
 internal sealed class FtdiSafeHandle : SafeHandle
 {

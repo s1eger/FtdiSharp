@@ -1,3 +1,5 @@
+using FtdiSharp.Abstractions;
+using FtdiSharp.Native;
 using System.Text;
 
 namespace FtdiSharp
