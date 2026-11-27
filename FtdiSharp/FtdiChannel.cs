@@ -1,6 +1,9 @@
-﻿namespace FtdiSharp
+﻿using FtdiSharp.Abstractions;
+using FtdiSharp.Native;
+
+namespace FtdiSharp
 {
-    public class FtdiChannel : IDisposable
+    public class FtdiChannel : IFtdiChannel
     {
         private readonly FtdiSafeHandle _handle;
         private bool _disposed;

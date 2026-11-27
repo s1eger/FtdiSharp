@@ -1,8 +1,10 @@
+using FtdiSharp.Abstractions;
+using FtdiSharp.Native;
 using System.Text;
 
 namespace FtdiSharp
 {
-    public class Ftdi
+    public class Ftdi : IFtdi
     {
         public FtdiSettings Settings { get; set; }
 
@@ -92,9 +94,9 @@ namespace FtdiSharp
         }
 
         /// <summary>
-        /// Opens the device at the specified index and returns a configured channel.
+        /// Opens the device at the specified index from the list of devices and returns a configured channel.
         /// </summary>
-        public FtdiChannel OpenByIndex(uint index)
+        public IFtdiChannel OpenByIndex(uint index)
         {
             FtdiNative.Open(index, out FtdiSafeHandle handle).ThrowIfNotOk();
 
@@ -104,7 +106,7 @@ namespace FtdiSharp
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenBySerial(uint serial)
+        public IFtdiChannel OpenBySerial(string serial)
         {
             FtdiNative.OpenEx(serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
 
@@ -114,17 +116,12 @@ namespace FtdiSharp
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenBySerial(IFtdiDevice device)
-        {
-            FtdiNative.OpenEx(device.Serial, FtdiOpenFlags.SerialNumber, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public IFtdiChannel OpenBySerial(IFtdiDevice device) => OpenBySerial(device.Serial);
 
         /// <summary>
         /// Opens the device by its description and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByDescription(string description)
+        public IFtdiChannel OpenByDescription(string description)
         {
             FtdiNative.OpenEx(description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
 
@@ -134,17 +131,12 @@ namespace FtdiSharp
         /// <summary>
         /// Opens the device by its description and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByDescription(IFtdiDevice device)
-        {
-            FtdiNative.OpenEx(device.Description, FtdiOpenFlags.Description, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public IFtdiChannel OpenByDescription(IFtdiDevice device) => OpenByDescription(device.Description);
 
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByLocation(string location)
+        public IFtdiChannel OpenByLocation(uint location)
         {
             FtdiNative.OpenEx(location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();
 
@@ -154,12 +146,7 @@ namespace FtdiSharp
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByLocation(IFtdiDevice device)
-        {
-            FtdiNative.OpenEx(device.Location, FtdiOpenFlags.Location, out FtdiSafeHandle handle).ThrowIfNotOk();
-
-            return new FtdiChannel(Settings, handle);
-        }
+        public IFtdiChannel OpenByLocation(IFtdiDevice device) => OpenByLocation(device.Location);
 
         /// <summary>
         /// Rescans the system for connected FTDI devices.

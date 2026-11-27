@@ -1,4 +1,4 @@
-﻿namespace FtdiSharp
+﻿namespace FtdiSharp.Abstractions
 {
     public interface IFtdiDevice
     {

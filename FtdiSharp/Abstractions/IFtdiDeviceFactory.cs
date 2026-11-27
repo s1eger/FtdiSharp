@@ -1,4 +1,4 @@
-namespace FtdiSharp
+namespace FtdiSharp.Abstractions
 {
     public interface IFtdiDeviceFactory<T> where T : IFtdiDevice
     {

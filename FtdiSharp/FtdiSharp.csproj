@@ -8,7 +8,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
     <PackageId>FTDI-Sharp</PackageId>
-    <Version>0.1.1</Version>
+    <Version>0.1.3</Version>
     <Authors>Aleksandr Misautov</Authors>
     <PackageDescription>A cross-platform managed API for FTDI D2XX devices.</PackageDescription>
     <PackageTags>FTDI;D2XX;USB;serial</PackageTags>
@@ -25,9 +25,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\README.md"
-          Pack="true"
-          PackagePath="\"
-          Link="README.md" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" Link="README.md" />
   </ItemGroup>
 </Project>
