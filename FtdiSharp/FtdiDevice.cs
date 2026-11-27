@@ -24,16 +24,16 @@ namespace FtdiSharp
         /// <summary>
         /// Opens the device by its serial number and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenBySerial() => _ftdi.OpenBySerial(this);
+        public virtual IFtdiChannel OpenBySerial() => _ftdi.OpenBySerial(this);
 
         /// <summary>
         /// Opens the device by its description and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByDescription() => _ftdi.OpenByDescription(this);
+        public virtual IFtdiChannel OpenByDescription() => _ftdi.OpenByDescription(this);
 
         /// <summary>
         /// Opens the device by its location and returns a configured channel.
         /// </summary>
-        public virtual FtdiChannel OpenByLocation() => _ftdi.OpenByLocation(this);
+        public virtual IFtdiChannel OpenByLocation() => _ftdi.OpenByLocation(this);
     }
 }
